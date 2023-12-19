@@ -4,12 +4,13 @@ import java.util.ArrayList;
 
 public class ParkingLot {
     ArrayList<Car> currentCars; // database
-    ArrayList<Car> outCars;
+    ArrayList<Car> outCars; // database
     int spaceTotal = 100;
     int space = 0;
     
     int getCurrentSpace() {
-        return 0;
+        int v = spaceTotal - space;
+        return v;
     }
 
     void carIn(Car car) {
@@ -17,6 +18,6 @@ public class ParkingLot {
     }
 
     void carOut(Car car) {
-        
+
     }
 }
