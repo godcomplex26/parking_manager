@@ -8,5 +8,10 @@ public class Car {
     boolean isPaid = false;
     boolean isMember = false;
     Instant timeIn = Instant.now();
-    Instant timeOut;
+    Instant timeOut = null;
+
+    public Car(int carNum, String carType) {
+        this.carNum = carNum;
+        this.carType = carType;
+    }
 }

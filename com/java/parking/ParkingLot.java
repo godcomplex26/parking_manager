@@ -5,5 +5,18 @@ import java.util.ArrayList;
 public class ParkingLot {
     ArrayList<Car> currentCars; // database
     ArrayList<Car> outCars;
-    int space = 100;
+    int spaceTotal = 100;
+    int space = 0;
+    
+    int getCurrentSpace() {
+        return 0;
+    }
+
+    void carIn(Car car) {
+        
+    }
+
+    void carOut(Car car) {
+        
+    }
 }
