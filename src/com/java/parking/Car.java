@@ -2,16 +2,31 @@ package com.java.parking;
 
 import java.time.Instant;
 
-public class Car {
-    int carNum;
+interface InnerCar {
+    void setMemNum(int memNum);
+    void setTimeOut();
+}
+
+public class Car implements InnerCar {
+    String carNum;
     String carType;
     boolean isPaid = false;
-    boolean isMember = false;
+    int memNum = 0;
     Instant timeIn = Instant.now();
     Instant timeOut = null;
 
-    public Car(int carNum, String carType) {
+    public Car(String carNum, String carType) {
         this.carNum = carNum;
         this.carType = carType;
+    }
+
+    @Override
+    public void setMemNum(int memNum) {
+        this.memNum = memNum;
+    }
+
+    @Override
+    public void setTimeOut() {
+        this.timeOut = Instant.now();
     }
 }
