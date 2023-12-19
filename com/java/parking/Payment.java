@@ -1,4 +1,4 @@
-package com.java.pm;
+package com.java.parking;
 
 interface PaymentMethod {
     void pay(double amount);
