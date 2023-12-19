@@ -1,6 +1,9 @@
+package com.java.parking;
+
 import java.util.ArrayList;
 
 public class ParkingLot {
-    ArrayList<Car> db; // database
-    int seats = 100;
+    ArrayList<Car> currentCars; // database
+    ArrayList<Car> outCars;
+    int space = 100;
 }
