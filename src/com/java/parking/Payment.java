@@ -1,41 +1,77 @@
 package com.java.parking;
 
-interface PaymentMethod {
-    void pay(double amount);
-}
+import java.time.Duration;
 
-class ByCash implements PaymentMethod {
-    @Override
-    public void pay(double amount) {
-        System.out.println("현금으로 " + amount + "원 결제되었습니다.");
+abstract class AbstractPayment {
+    Car car;
+    int pricePerTenMin;
+    int paymentMethod;
+    int discountSum;
+    double discountProduct;
+    public AbstractPayment(int pricePerTenMin, Car car) {
+        this.pricePerTenMin = pricePerTenMin;
+        this.car = car;
     }
 }
 
-class ByCard implements PaymentMethod {
-    @Override
-    public void pay(double amount) {
-        System.out.println("카드로 " + amount + "원 결제되었습니다.");
-    }
+interface InnerPayment {
+    int toMin();
+    int payCalc(Car car);
+    void setDiscountSum(int paidAmount);
+    void setDiscountProduct(double percent);
+    void setPaymentMethod(int method);
+    void setCar(Car car);
 }
 
-class Pay<T extends PaymentMethod> {
-    private T paymentMethod;
-
-    public Pay(T paymentMethod) {
-        this.paymentMethod = paymentMethod;
+public class Payment extends AbstractPayment implements InnerPayment {
+    Car car;
+    int pricePerTenMin;
+    int paymentMethod = 1;
+    int discountSum = 0;
+    double discountProduct = 0;
+    
+    public Payment(int pricePerTenMin, Car car) {
+        super(pricePerTenMin, car);
+        this.discountSum = car.paidAmount;
     }
 
-    public void processPayment(double amount) {
-        paymentMethod.pay(amount);
+    public int toMin() {
+        Duration duration = Duration.between(this.car.timeIn, this.car.timeOut);
+        return (int)duration.toMinutes();
     }
-}
 
-public class Payment {
-    public static void main(String[] args) {
-        Pay<ByCash> cashPayment = new Pay<>(new ByCash());
-        cashPayment.processPayment(10000); // 현금 결제
+    public int payCalc(Car car) {
+        setCar(car);
+        // 분 단위 절삭
+        int duration = (toMin()/10) * 10;
+        
+        double amount = (duration*pricePerTenMin)*(1-discountProduct) - discountSum;
+        return (int)amount;
+    }
 
-        Pay<ByCard> cardPayment = new Pay<>(new ByCard());
-        cardPayment.processPayment(20000); // 카드 결제
+    public void setDiscountSum(int paidAmount) {
+        this.discountSum = paidAmount;
+    }
+
+    public void setDiscountProduct(double percent) {
+        if (percent > 1 || percent < 0) {
+            System.out.println("올바른 값을 입력하세요.");
+        }
+        else {
+            this.discountProduct = percent;
+        }
+    }
+
+    public void setPaymentMethod(int method) {
+        if (method != 1 || method != 2) {
+            System.out.println("올바른 값을 입력하세요.");
+        }
+        else {
+            this.paymentMethod = method;
+        }
+    }
+
+    public void setCar(Car car) {
+        this.car = car;
     }
 }
