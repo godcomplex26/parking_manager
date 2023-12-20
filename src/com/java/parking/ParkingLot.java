@@ -1,7 +1,6 @@
 package com.java.parking;
 
 import java.util.ArrayList;
-import java.util.List;
 
 
 interface InnerParkingLot
@@ -11,13 +10,15 @@ interface InnerParkingLot
     boolean isAvailable();
 	int getCurrentSpace();
     String errorType(int errorCode);
+    void setPricePerTenMin(int price);
 }
 
 public class ParkingLot implements InnerParkingLot{
-    ArrayList<Car> currentCars = new ArrayList(); // database
-    ArrayList<Car> outCars = new ArrayList(); // database
+    ArrayList<Car> currentCars = new ArrayList<>(); // database
+    ArrayList<Car> outCars = new ArrayList<>(); // database
     int spaceTotal = 100; // 전체 주차가능 수
     int space = 0; // 현재 주차중인 수
+    int pricePerTenMin = 200;
     
     @Override
     public int getCurrentSpace() { // 현재 주차가능 공간
@@ -38,12 +39,18 @@ public class ParkingLot implements InnerParkingLot{
     
     @Override
     public void carOut(Car car) {
-    	outCars.add(car); // 차량 출고
     	if (!isAvailable()) {
     		System.out.println(errorType(2));
     	}
     	else {
-    		space--;
+            if (car.isPaid == true) {
+                currentCars.remove(car);
+                outCars.add(car); // 차량 출고
+                space--;
+            }
+    		else {
+                System.out.println(errorType(3));
+            }
     	}
     }
 
@@ -54,6 +61,8 @@ public class ParkingLot implements InnerParkingLot{
                 return "주차 공간이 가득 찼습니다.";
             case 2:
             	return "주차된 차량이 없습니다.";
+            case 3:
+                return "정산이 완료되지 않았습니다.";
             default:
                 return "오류없음";
         }
@@ -73,5 +82,10 @@ public class ParkingLot implements InnerParkingLot{
         {
         	return false;
         }
+    }
+
+    @Override
+    public void setPricePerTenMin(int price) {
+        this.pricePerTenMin = price;
     }
 }

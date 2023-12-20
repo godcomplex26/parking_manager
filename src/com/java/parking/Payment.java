@@ -1,6 +1,8 @@
 package com.java.parking;
 
 import java.time.Duration;
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 
 abstract class AbstractPayment {
     Car car;
@@ -16,7 +18,7 @@ abstract class AbstractPayment {
 
 interface InnerPayment {
     int toMin();
-    int payCalc(Car car);
+    double payCalc(Car car);
     void setDiscountSum(int paidAmount);
     void setDiscountProduct(double percent);
     void setPaymentMethod(int method);
@@ -32,6 +34,8 @@ public class Payment extends AbstractPayment implements InnerPayment {
     
     public Payment(int pricePerTenMin, Car car) {
         super(pricePerTenMin, car);
+        this.pricePerTenMin = pricePerTenMin;
+        this.car = car;
         this.discountSum = car.paidAmount;
     }
 
@@ -40,13 +44,13 @@ public class Payment extends AbstractPayment implements InnerPayment {
         return (int)duration.toMinutes();
     }
 
-    public int payCalc(Car car) {
+    public double payCalc(Car car) {
         setCar(car);
         // 분 단위 절삭
-        int duration = (toMin()/10) * 10;
+        // int duration = (toMin()/10) * 10;
+        Duration duration = Duration.between(this.car.timeIn, this.car.timeOut);
         
-        double amount = (duration*pricePerTenMin)*(1-discountProduct) - discountSum;
-        return (int)amount;
+        return (int)(duration.toMinutes()*pricePerTenMin*(1-discountProduct) - discountSum);
     }
 
     public void setDiscountSum(int paidAmount) {
@@ -73,5 +77,22 @@ public class Payment extends AbstractPayment implements InnerPayment {
 
     public void setCar(Car car) {
         this.car = car;
+    }
+
+    public static void main(String[] args) {
+        Car car = new Car("12나1111", "승용차");
+        car.addAnHour();
+        car.setTimeOut();
+        Payment pay = new Payment(200, car);
+        pay.car.addAnHour();
+        pay.car.setTimeOut();
+        // Instant now = Instant.now();
+        // Instant later = Instant.now().plus(1, ChronoUnit.HOURS);
+        // Duration duration = Duration.between(now, later);
+        // System.out.println(duration.toMinutes());
+        // System.out.println(pay.toMin());
+        System.out.println(pay.car.timeIn);
+        System.out.println(pay.car.timeOut);
+        System.out.println(pay.payCalc(pay.car));
     }
 }

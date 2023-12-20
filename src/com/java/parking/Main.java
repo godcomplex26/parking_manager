@@ -109,6 +109,35 @@ public class Main {
 						String outCarNum = sc.nextLine(); // 출차 차량 번호 입력
 						
 						Car it = Utils.findCarInst(parkingLot.currentCars, outCarNum);
+                        // Payment pay = new Payment(200, it);
+                        it.addAnHour(); // 1시간 추가
+                        // it.setTimeOut();
+                        NewPayment pay = new NewPayment(it, parkingLot);
+                        // System.out.println(pay.payCalc(it));
+                        while (!pay.car.isPaid) {
+                            // pay = new Payment(200, it);
+                            pay.car.setTimeOut();
+                            System.out.printf(" %d원을 다시 계산해 주세요.\n", pay.getAmount());
+                            System.out.print("> ");
+                            int amount = sc.nextInt();
+                            pay.car = pay.execPay(amount);
+                            // if (pay.payCalc(it) == 0) {
+                            //     System.out.printf("감사합니다. 안녕히가세요.\n");
+                            //     it.isPaid = true;
+                            //     parkingLot.carOut(it);
+                            //     break;
+                            // }
+                            // else if (pay.payCalc(it) < 0) {
+                            //     System.out.printf("거스름돈 %d원 입니다. 감사합니다.", -pay.payCalc(it));
+                                
+                            //     it.isPaid = true;
+                            //     parkingLot.carOut(it);
+                            //     break;
+                            // }
+                        }
+                        
+                        
+                        
 						
 						// 정산 추가 필요		
 						

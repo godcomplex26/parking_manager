@@ -1,6 +1,7 @@
 package com.java.parking;
 
 import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 
 abstract class AbstractCar {
     String carNum;
@@ -22,6 +23,8 @@ interface InnerCar {
     String getCarNum();
     String getCarType();
     int getPaidAmount();
+    void setPaidAmount(int paidAmount);
+    void addAnHour();
 }
 
 public class Car extends AbstractCar implements InnerCar {
@@ -60,5 +63,15 @@ public class Car extends AbstractCar implements InnerCar {
     @Override
     public int getPaidAmount() {
         return this.paidAmount;
+    }
+
+    @Override
+    public void setPaidAmount(int paidAmount) {
+        this.paidAmount += paidAmount;
+    }
+
+    @Override
+    public void addAnHour() {
+        this.timeIn = this.timeIn.minus(1, ChronoUnit.HOURS);
     }
 }

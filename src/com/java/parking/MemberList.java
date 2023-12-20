@@ -23,4 +23,3 @@ public class MemberList {
 		mlist.add(new Member(id, memName, carNum));
 	}
 }
-	

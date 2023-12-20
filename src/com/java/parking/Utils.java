@@ -44,7 +44,7 @@ public class Utils {
     }
     
     // 특정 carNum을 가진 Car 객체를 list에서 Car 타입으로 호출
-    public static Car findCarInst(ArrayList list, String carNum) {
+    public static Car findCarInst(ArrayList<Car> list, String carNum) {
     	Car it = null;
 		for(Iterator<Car> itr = list.iterator(); itr.hasNext();) {
 			it = itr.next();
@@ -55,7 +55,7 @@ public class Utils {
 	}
     
     // 특정 ID를 가진 member 객체를 list에서 member 타입으로 호출
-    public static Member findMemInst(ArrayList list, int memId) {
+    public static Member findMemInst(ArrayList<Member> list, int memId) {
     	Member it = null;
 		for(Iterator<Member> itr = list.iterator(); itr.hasNext();) {
 			it = itr.next();
