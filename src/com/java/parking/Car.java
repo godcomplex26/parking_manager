@@ -82,4 +82,8 @@ public class Car { // extends AbstractCar implements InnerCar {
     public void carPrint() {
     	System.out.printf("차량 번호: %-8s | 차량 종류: %-5s | 입차 시간: %-8s\n", carNum, carType, timeIn);
     }
+
+    public void setTotalPay(int amount) {
+        this.totalPay = amount;
+    }
 }

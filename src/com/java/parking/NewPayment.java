@@ -6,6 +6,7 @@ import java.time.Instant;
 public class NewPayment {
     Car car;
     ParkingLot parkingLot;
+    double discount = 0;
 
     public NewPayment(Car car, ParkingLot parkingLot) {
         this.car = car;
@@ -17,7 +18,7 @@ public class NewPayment {
             car.setTimeOut();
         }
         Duration duration = Duration.between(this.car.timeIn, this.car.timeOut);
-        return (int)(duration.toMinutes()*parkingLot.pricePerTenMin - car.paidAmount);
+        return (int)(duration.toMinutes()*parkingLot.pricePerTenMin*(1-discount) - car.paidAmount);
     }
 
     int getChanges(int amount, int receive) {
@@ -30,22 +31,22 @@ public class NewPayment {
         }
         if (getAmount() == receive) {
             car.setTimeOut();
+            car.setTotalPay(getAmount());
             System.out.println("----------" + car.timeOut);
             car.setPaidAmount(receive);
             car.isPaid = true;
             System.out.printf("안녕히 가세요. 감사합니다.\n");
-            car.totalPay = getAmount();
             parkingLot.carOut(car);
             return this.car;
         }
         else if (getAmount() < receive) {
             car.setTimeOut();
+            car.setTotalPay(getAmount());
             System.out.println("----------" + car.timeOut);
             car.setPaidAmount(receive);
             car.isPaid = true;
             // int changes = receive - getAmount();
             System.out.printf("거스름돈은 %d 입니다. 감사합니다.\n", -getAmount());
-            car.totalPay = getAmount();
             parkingLot.carOut(car);
             return this.car;
         }

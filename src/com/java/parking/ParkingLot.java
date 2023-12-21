@@ -19,7 +19,7 @@ interface InnerParkingLot
 
 public class ParkingLot implements InnerParkingLot{
     ArrayList<Car> currentCars = new ArrayList<>(); // database
-    ArrayList<Car> outCars = new ArrayList<>(); // database
+    CarArray outCars = new CarArray(); // database
     int spaceTotal = 70; // 전체 주차가능 수
     int space = 0; // 현재 주차중인 수
     int pricePerTenMin = 200;

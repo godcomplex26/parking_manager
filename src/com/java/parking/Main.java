@@ -22,7 +22,7 @@ public class Main {
 		boolean runLMenu2_2 = true; // 회원 정보 수정 및 삭제
 		
 		ParkingLot parkingLot = new ParkingLot(); // 주차장 객체 생성
-		// parkingLot.setTest(); // 테스트용 자료 추가
+		parkingLot.setTest(); // 테스트용 자료 추가
 		MemberList memberList = new MemberList(); // 멤버 리스트 객체 생성
 
 		while(runUMenu) {
@@ -266,11 +266,13 @@ public class Main {
 					// 입출차 차량 통계
 					case 2:
 						Utils.showUI("입출차 차량 통계");
+                        parkingLot.outCars.showAllCar();
 						break;
 						
 					// 결제된 금액 통계					
 					case 3:
 						Utils.showUI("결제된 금액 통계");
+                        parkingLot.outCars.showAllPay();
 						break;
 						
 					// 이전 메뉴	
