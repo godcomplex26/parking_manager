@@ -13,6 +13,9 @@ public class NewPayment {
     }
 
     int getAmount() {
+        if (car.timeOut == null) {
+            car.setTimeOut();
+        }
         Duration duration = Duration.between(this.car.timeIn, this.car.timeOut);
         return (int)(duration.toMinutes()*parkingLot.pricePerTenMin - car.paidAmount);
     }
@@ -22,36 +25,35 @@ public class NewPayment {
     }
 
     Car execPay(int receive) {
+        if (car.timeOut == null) {
+            car.setTimeOut();
+        }
         if (getAmount() == receive) {
             car.setTimeOut();
+            System.out.println("----------" + car.timeOut);
             car.setPaidAmount(receive);
             car.isPaid = true;
-            System.out.printf("안녕히 가세요. 감사합니다.");
+            System.out.printf("안녕히 가세요. 감사합니다.\n");
+            car.totalPay = getAmount();
+            parkingLot.carOut(car);
             return this.car;
         }
         else if (getAmount() < receive) {
             car.setTimeOut();
+            System.out.println("----------" + car.timeOut);
             car.setPaidAmount(receive);
             car.isPaid = true;
             // int changes = receive - getAmount();
-            System.out.printf("거스름돈은 %d 입니다. 감사합니다.", -getAmount());
+            System.out.printf("거스름돈은 %d 입니다. 감사합니다.\n", -getAmount());
+            car.totalPay = getAmount();
+            parkingLot.carOut(car);
             return this.car;
         }
         else {
             car.setTimeOut();
             car.setPaidAmount(receive);
-            System.out.printf("다시 정산을 해주시기 바랍니다. 감사합니다.");
+            System.out.printf("다시 정산을 해주시기 바랍니다. 감사합니다.\n");
             return this.car;
         }
-    }
-
-    public static void main(String[] args) {
-        ParkingLot parkingLot = new ParkingLot();
-        Car car = new Car("1", "1");
-        car.addAnHour();
-        NewPayment pay = new NewPayment(car, parkingLot);
-        car = pay.execPay(1000);
-        System.out.println(car.isPaid);
-        System.out.println(car.paidAmount);
     }
 }

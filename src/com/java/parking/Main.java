@@ -1,166 +1,288 @@
 package com.java.parking;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Scanner;
 
 public class Main {
 	public static void main(String[] args) {
 		Scanner sc = new Scanner(System.in);
-		int selectUMenu;
-		int selectLMenu1;
-		int selectLMenu2;
-		boolean runUMenu = true;
-		boolean runLMenu1 = true;
-		boolean runLMenu2 = true;
-		ParkingLot parkingLot = new ParkingLot(); // 주차장 객체 생성
-		MemberList memberList = new MemberList(); // 멤버 리스트 객체 생성
+		int selectUMenu; // 전체 메뉴
+		int selectLMenu1; // 입출차 관리
+		int selectLMenu2; // 회원 관리
+		int selectLMenu3; // 주차장 관리
+		int selectLMenu2_1; // 회원 정보 조회(전체 or 특정)
+		int selectLMenu2_2; // 회원 정보 수정 및 삭제
 		
+		boolean runUMenu = true; // 전체 메뉴
+		boolean runLMenu1 = true; // 입출차 관리
+		boolean runLMenu2 = true; // 회원 관리
+		boolean runLMenu3 = true; // 주차장 관리
+		boolean runLMenu2_1 = true; // 회원 정보 조회(전체 or 특정)
+		boolean runLMenu2_2 = true; // 회원 정보 수정 및 삭제
+		
+		ParkingLot parkingLot = new ParkingLot(); // 주차장 객체 생성
+		// parkingLot.setTest(); // 테스트용 자료 추가
+		MemberList memberList = new MemberList(); // 멤버 리스트 객체 생성
+
 		while(runUMenu) {
 			Utils.showUI("메뉴 선택");
-			System.out.printf("1.%-15s 2.%-15s 3.%-15s\n", "회원 관리", "입출차 관리", "종료");
-			System.out.print("> ");
-			selectUMenu = sc.nextInt();
-			
+            List<String> mainMenu = Arrays.asList("입출차 관리", "회원 관리", "주차장 관리", "종료");
+            selectUMenu = Utils.showMenu(mainMenu, sc);
+						
 			switch(selectUMenu) {
-			
+						
 			case 1:
 				runLMenu1 = true;
 				
 				while(runLMenu1) {
-					Utils.showUI("회원 차량 관리");
-					System.out.printf("1.%-15s 2.%-16s 3.%-15s\n4.%-15s 5.%-15s 6.%-15s\n", 
-							"회원 차량 등록", "회원 정보 조회", "입차 차량 조회", "회원 등록 정보 수정", "회원 등록 정보 삭제", "이전 메뉴");
-					System.out.print("> ");
-					selectLMenu1 = sc.nextInt();
+					Utils.showUI("입출차 관리 메뉴 선택");
+					List<String> subMenu1 = Arrays.asList("차량 입차", "출차 정산", "입차 차량 조회", "이전 메뉴");
+					selectLMenu1 = Utils.showMenu(subMenu1, sc);
 					
 					switch(selectLMenu1) {
-								
+					
+					// 차량 입차
 					case 1:
-						Utils.showUI("회원 차량 등록");
-						memberList.addMember();
-						System.out.println("회원 등록 완료");
-						break;
-							
+						Utils.showUI("차량 입차");
+						
+						parkingLot.carIn();
+						break;			
+						
+					// 출차 정산
 					case 2:
-						Utils.showUI("회원 정보 조회");
-						sc.nextLine(); // 입력창 초기화
+						Utils.showUI("출차 정산");
 						
-						System.out.print("회원 ID 입력 > ");
-						int memId = sc.nextInt(); // 회원 ID 입력
+						if(parkingLot.space > 0 ) { // 출차 차량 존재 여부 확인
+							sc.nextLine(); // 입력창 초기화
+							    
+							System.out.print("출차 차량 번호 입력 > ");
+							String outCarNum = sc.nextLine(); // 출차 차량 번호 입력
+							    
+							Car it = Utils.findCarInst(parkingLot.currentCars, outCarNum);
+							it.addAnHour(); // 1시간 추가
+							NewPayment pay = new NewPayment(it, parkingLot);
+							while (!pay.car.isPaid) {
+								pay.car.setTimeOut();
+								System.out.printf(" %d원을 다시 계산해 주세요.\n", pay.getAmount());
+								System.out.print("> ");
+								int amount = sc.nextInt();
+								pay.car = pay.execPay(amount);
+							}		
+							
+							parkingLot.currentCars.remove(it);
+							parkingLot.carOut(it);
+							Utils.showCarInfo(outCarNum, "출고");
+							Utils.showLotInfo(parkingLot.getCurrentSpace()); // 남은 주차 자리 출력
+							break;
+						}
+						else {
+							System.out.println(parkingLot.errorType(2));
+							break;
+						}					
 						
-						Member it = Utils.findMemInst(memberList.mlist, memId);
-						it.memberPrint();
-						
-						break;
-						
+					// 입차 차량 조회
 					case 3:
 						Utils.showUI("입차 차량 조회");
-						break;	
+						sc.nextLine(); // 입력창 초기화
 						
+						System.out.print("조회할 차량 번호 입력 > ");
+						String carNum = sc.nextLine(); // 회원 ID 입력
+						
+						Car it2 = Utils.findCarInst(parkingLot.currentCars, carNum);
+						it2.carPrint();
+						break;
+					
+					// 이전 메뉴
 					case 4:
-						Utils.showUI("회원 등록 정보 수정");
-						break;
-							
-					case 5:
-						Utils.showUI("회원 등록 정보 삭제");
-						break;
-							
-					case 6:
-						Utils.showUI("이전 메뉴");
+						// Utils.showUI("이전 메뉴");
 						runLMenu1 = false;
 						break;
 					}
 				}
 				break;
-						
+				
 			case 2:
 				runLMenu2 = true;
 				
 				while(runLMenu2) {
-					Utils.showUI("입출차 관리 메뉴 선택");
-					System.out.printf("1.%-15s 2.%-15s 3.%-15s\n", "차량 입차", "출차 정산", "이전 메뉴");
-					System.out.print("> ");
-					selectLMenu2 = sc.nextInt();
+					Utils.showUI("회원 관리 메뉴 선택");
+					List<String> subMenu2 = Arrays.asList("회원 차량 등록", "회원 정보 조회", "회원 정보 수정 및 삭제", "이전 메뉴");
+					selectLMenu2 = Utils.showMenu(subMenu2, sc);
 					
 					switch(selectLMenu2) {
 					
-					// 차량 입차
+					// 회원 차량 등록
 					case 1:
-						Utils.showUI("차량 입차");
-						sc.nextLine(); // 입력창 초기화
-						
-						System.out.print("입차 차량 번호 입력(0 입력시 랜덤 생성) > ");
-						String inCarNum = sc.nextLine(); // 차량 번호 입력
-						inCarNum = Utils.fakeCarNumRecognizer(inCarNum);
-												
-						System.out.print("차량 종류 입력 > ");
-						String inCarType = sc.nextLine(); // 차량 타입 자동 생성 입력
-						
-						parkingLot.carIn(new Car(inCarNum, inCarType)); // carNum, carType 가지는 자동차 입차
-						Utils.showCarInfo(inCarNum, "입고");
-						Utils.showLotInfo(parkingLot.getCurrentSpace()); // 남은 주차 자리 출력
-						break;
-							
-					// 출차 정산
-					case 2:
-						Utils.showUI("출차 정산");
-						sc.nextLine(); // 입력창 초기화
-						
-						System.out.print("출차 차량 번호 입력 > ");
-						String outCarNum = sc.nextLine(); // 출차 차량 번호 입력
-						
-						Car it = Utils.findCarInst(parkingLot.currentCars, outCarNum);
-                        // Payment pay = new Payment(200, it);
-                        it.addAnHour(); // 1시간 추가
-                        // it.setTimeOut();
-                        NewPayment pay = new NewPayment(it, parkingLot);
-                        // System.out.println(pay.payCalc(it));
-                        while (!pay.car.isPaid) {
-                            // pay = new Payment(200, it);
-                            pay.car.setTimeOut();
-                            System.out.printf(" %d원을 다시 계산해 주세요.\n", pay.getAmount());
-                            System.out.print("> ");
-                            int amount = sc.nextInt();
-                            pay.car = pay.execPay(amount);
-                            // if (pay.payCalc(it) == 0) {
-                            //     System.out.printf("감사합니다. 안녕히가세요.\n");
-                            //     it.isPaid = true;
-                            //     parkingLot.carOut(it);
-                            //     break;
-                            // }
-                            // else if (pay.payCalc(it) < 0) {
-                            //     System.out.printf("거스름돈 %d원 입니다. 감사합니다.", -pay.payCalc(it));
-                                
-                            //     it.isPaid = true;
-                            //     parkingLot.carOut(it);
-                            //     break;
-                            // }
-                        }
-                        
-                        
-                        
-						
-						// 정산 추가 필요		
-						
-						parkingLot.currentCars.remove(it);
-						parkingLot.carOut(it);
-						Utils.showCarInfo(outCarNum, "출고");
-						Utils.showLotInfo(parkingLot.getCurrentSpace()); // 남은 주차 자리 출력
-						
-						
-						
-						
+						Utils.showUI("회원 차량 등록");
+						memberList.addMember();
+						System.out.println("회원 등록 완료");
 						break;
 					
-					// 이전 메뉴
+					// 회원 정보 조회
+					case 2:
+						runLMenu2_1 = true;
+						
+						if(memberList.mlist.size() != 0) {
+							while(runLMenu2_1) {
+								Utils.showUI("회원 정보 조회");
+								List<String> subMenu2_1 = Arrays.asList("전체 회원 조회", "특정 회원 조회");
+								selectLMenu2_1 = Utils.showMenu(subMenu2_1, sc);
+						
+								switch(selectLMenu2_1) {
+								
+								// 회원 전체 조회
+								case 1:
+									Utils.showUI("전체 회원 조회");
+									for(Member m : memberList.mlist) {
+										m.memberPrint();
+									}
+									break;
+								
+								// 특정 회원 조회
+								case 2:
+									Utils.showUI("특정 회원 조회");
+									System.out.print("조회할 회 원 정보 입력(ID, 이름, 차량 번호 中 1) > ");
+									String whatFind = sc.nextLine(); // 정보 입력
+									memberList.mlist.showMember(whatFind);								
+															
+									break;
+								} break;
+							} break;
+						}
+						else {
+							System.out.println("조회할 정보가 없습니다.");
+							break;
+						}
+					
+					// 회원 정보 수정 및 삭제
 					case 3:
-						Utils.showUI("이전 메뉴");
+						runLMenu2_2 = true;
+						
+						if(memberList.mlist.size() != 0) {
+							while(runLMenu2_2) {
+								Utils.showUI("회원 정보 수정 및 삭제");
+								List<String> subMenu2_2 = Arrays.asList("회원 정보 수정", "회원 정보 삭제");
+								selectLMenu2_2 = Utils.showMenu(subMenu2_2, sc);
+								
+								switch(selectLMenu2_2) {
+								
+								// 회원 정보 수정
+								case 1:
+									Utils.showUI("회원 등록 정보 수정");
+									sc.nextLine(); // 입력창 초기화
+									
+									System.out.print("수정할 회원 ID 입력 > ");
+									String memId = sc.nextLine(); // 회원 ID 입력
+									
+									Member it = Utils.findMemInst(memberList.mlist, memId);
+									
+									System.out.println("회원 정보를 입력하세요.");
+									System.out.print("회원 ID > ");
+									int id = sc.nextInt();
+									sc.nextLine();
+									
+									System.out.print("회원 이름 > ");
+									String newMemName = sc.nextLine();
+									it.setName(newMemName);
+									
+									System.out.print("차량 번호 > ");
+									String newMemCarNum = sc.nextLine();
+									it.setNum(newMemCarNum);
+									
+									System.out.println("회원 정보 수정 완료");
+									// it.memberPrint();
+									break;
+							
+						
+								// 회원 정보 삭제	
+								case 2:
+									Utils.showUI("회원 등록 정보 삭제");
+									sc.nextLine(); // 입력창 초기화
+									
+									System.out.print("삭제할 회원 ID 입력 > ");
+									memId = sc.nextLine(); // 회원 ID 입력
+									
+									it = Utils.findMemInst(memberList.mlist, memId);
+									memberList.mlist.remove(it);
+									System.out.println("회원 정보 삭제 완료");					
+									break;
+								} break;
+							} break;
+						} 
+						else {
+							System.out.println("조회할 정보가 없습니다.");
+							break;
+						}
+				
+					// 이전 메뉴	
+					case 4:
+						// Utils.showUI("이전 메뉴");
 						runLMenu2 = false;
+						break;
+						
+					// 차량 랜덤 생성 후 입고 - UI 노출X
+					case 2580:
+						Utils.showUI("입차 차량 랜덤 대량 생성");
+						
+						System.out.print("생성할 차량 수 입력 > ");
+						int makeCarNum = sc.nextInt();
+						
+						if(makeCarNum <= parkingLot.getCurrentSpace()) {
+							Utils.makeCars(makeCarNum, parkingLot.currentCars);
+							parkingLot.space += makeCarNum;
+							System.out.println(makeCarNum + "대의 차량이 생성 되었습니다.");
+						}
+						else {
+							System.out.println("주차 공간이 부족합니다.");
+						}
+						break;
+					}
+				}
+				break;
+			
+			case 3:
+				runLMenu3 = true;
+				
+				while(runLMenu3) {
+					Utils.showUI("주차장 관리 메뉴 선택");
+					List<String> subMenu3 = Arrays.asList("현재 주차된 차량 현황", "입출차 차량 통계", "결제된 금액 통계", "이전 메뉴");
+					selectLMenu3 = Utils.showMenu(subMenu3, sc);
+					
+					switch(selectLMenu3) {
+					
+					// 현재 주차된 차량 현황
+					case 1:
+						Utils.showUI("현재 주차된 차량 현황");
+						System.out.println("주차된 차량 수 : " + parkingLot.space);
+						System.out.println("주차된 차량 목록");
+						
+						for(Car c : parkingLot.currentCars) {
+							c.carPrint();
+						}
+						
+						break;
+						
+					// 입출차 차량 통계
+					case 2:
+						Utils.showUI("입출차 차량 통계");
+						break;
+						
+					// 결제된 금액 통계					
+					case 3:
+						Utils.showUI("결제된 금액 통계");
+						break;
+						
+					// 이전 메뉴	
+					case 4:
+						// Utils.showUI("이전 메뉴");
+						runLMenu3 = false;
 						break;
 					}
 				}
 				break;
 				
-			case 3:
+			case 4:
 				Utils.showUI("시스템 종료");
 				runUMenu = false;
 				break;

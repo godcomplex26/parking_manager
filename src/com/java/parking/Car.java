@@ -3,6 +3,7 @@ package com.java.parking;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 
+/*
 abstract class AbstractCar {
     String carNum;
     String carType;
@@ -11,6 +12,7 @@ abstract class AbstractCar {
     int paidAmount;
     Instant timeIn;
     Instant timeOut;
+    
     public AbstractCar(String carNum, String carType) {
         this.carNum = carNum;
         this.carType = carType;
@@ -26,52 +28,58 @@ interface InnerCar {
     void setPaidAmount(int paidAmount);
     void addAnHour();
 }
+*/
 
-public class Car extends AbstractCar implements InnerCar {
+
+public class Car { // extends AbstractCar implements InnerCar {
     String carNum;
     String carType;
     boolean isPaid = false;
     int memNum = 0;
     int paidAmount = 0;
+    int totalPay = 0;
     public Instant timeIn = Instant.now();
     public Instant timeOut = null;
 
     public Car(String carNum, String carType) {
-        super(carNum, carType);
+    	this.carNum = carNum;
+        this.carType = carType;
     }
 
-    @Override
+
     public String getCarNum() {
         return this.carNum;
     }
 
-    @Override
     public String getCarType() {
         return this.carType;
     }
 
-    @Override
     public void setMemNum(int memNum) {
         this.memNum = memNum;
     }
 
-    @Override
     public void setTimeOut() {
         this.timeOut = Instant.now();
     }
 
-    @Override
     public int getPaidAmount() {
         return this.paidAmount;
     }
 
-    @Override
     public void setPaidAmount(int paidAmount) {
         this.paidAmount += paidAmount;
     }
 
-    @Override
     public void addAnHour() {
         this.timeIn = this.timeIn.minus(1, ChronoUnit.HOURS);
+    }
+
+    public void addHours(int n) {
+        this.timeIn = this.timeIn.minus(n, ChronoUnit.HOURS);
+    }
+    
+    public void carPrint() {
+    	System.out.printf("차량 번호: %-8s | 차량 종류: %-5s | 입차 시간: %-8s\n", carNum, carType, timeIn);
     }
 }
