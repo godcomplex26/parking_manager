@@ -66,12 +66,17 @@ public class Main {
 							it.addAnHour();
 							
 							NewPayment pay = new NewPayment(it, parkingLot);
-                            if (memberList.mlist.isMember(it.carNum)) {
-                                pay.setDiscount(0.2);
+                            if (memberList.mlist.findMember(outCarNum) != null) {
+                                String test = memberList.mlist.findMember(outCarNum).carNum;
+                                System.out.println("테스트용: " + test);
                             }
-                            else {
-                                pay.setDiscount(0);
-                            }
+                            pay.setDiscount(memberList.mlist);
+                            // if (memberList.mlist.isMember(it.carNum)) {
+                            //     pay.setDiscount(0.2);
+                            // }
+                            // else {
+                            //     pay.setDiscount(0);
+                            // }
                             // pay.setDiscount(0.2);
 							while (!pay.car.isPaid) {
 								pay.car.setTimeOut();
@@ -95,15 +100,19 @@ public class Main {
 					// 입차 차량 조회
 					case 3:
 						Utils.showUI("입차 차량 조회");
-
-						System.out.print("조회할 차량 번호 입력 > ");
-						String carNum = sc.nextLine(); // 회원 ID 입력
-						
-						Car it2 = Utils.findCarInst(parkingLot.currentCars, carNum);
-                        if (it2 == null) {
-                            break;
-                        }
-						it2.carPrint();
+                        if (parkingLot.getSpace() > 0 ) {
+							System.out.print("조회할 차량 번호 입력 > ");
+							String carNum = sc.nextLine(); // 회원 ID 입력
+							
+							Car it2 = Utils.findCarInst(parkingLot.currentCars, carNum);
+	                        if (it2 == null) {
+	                        	break;
+	                        }
+							it2.carPrint();
+						}	
+						else {
+							System.out.println(parkingLot.errorType(2));			
+						}
 						break;
 					
 					// 이전 메뉴
@@ -276,18 +285,29 @@ public class Main {
 							c.carPrint();
 						}
 						System.out.println("주차된 차량 수 : " + parkingLot.getSpace());
+                        System.out.println("남은 주차 공간 : " + parkingLot.getCurrentSpace());
 						break;
 						
 					// 입출차 차량 통계
 					case 2:
 						Utils.showUI("입출차 차량 통계");
-                        parkingLot.outCars.showAllCar();
+						if(parkingLot.outCars.size() != 0) {
+							parkingLot.outCars.showAllCar();
+							}
+						else {
+							System.out.println(parkingLot.errorType(2));
+						}
 						break;
 						
 					// 결제된 금액 통계					
 					case 3:
 						Utils.showUI("결제된 금액 통계");
-                        parkingLot.outCars.showAllPay();
+						if(parkingLot.outCars.size() != 0) {
+							parkingLot.outCars.showAllPay();
+						}
+						else {
+							System.out.println(parkingLot.errorType(2));
+						}
 						break;
 						
 					// 이전 메뉴	

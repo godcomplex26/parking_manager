@@ -15,6 +15,21 @@ public class NewPayment {
     public void setDiscount(double d) {
         this.discount = d;
     }
+    
+    public void setDiscount(MemberArray ma) {
+        double d1 = 0;
+        double d2 = 0;
+    	if(this.car.carType.equals("경차"))
+    	{
+    		d1 = 0.5;
+    	}
+    	if(ma.findMember(this.car.carNum) != null)
+    	{
+            d2 = 0.3;
+        }
+        this.discount = d1;
+        this.discount = d1*(1+d2);
+    }
 
     int getAmount() {
         if (car.timeOut == null) {
