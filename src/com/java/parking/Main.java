@@ -22,7 +22,7 @@ public class Main {
 		boolean runLMenu2_2 = true; // 회원 정보 수정 및 삭제
 		
 		ParkingLot parkingLot = new ParkingLot(); // 주차장 객체 생성
-		// parkingLot.setTest(); // 테스트용 자료 추가
+		parkingLot.setTest(); // 테스트용 자료 추가
 		MemberList memberList = new MemberList(); // 멤버 리스트 객체 생성
 
 		while(runUMenu) {
@@ -147,7 +147,7 @@ public class Main {
 								// 회원 전체 조회
 								case 1:
 									Utils.showUI("전체 회원 조회");
-									for(Member m : memberList.mlist) {
+									for(Member m : memberList.mlist.sortMemberById()) {
 										m.memberPrint();
 									}
 									break;
@@ -270,13 +270,12 @@ public class Main {
 					// 현재 주차된 차량 현황
 					case 1:
 						Utils.showUI("현재 주차된 차량 현황");
-						System.out.println("주차된 차량 수 : " + parkingLot.getSpace());
 						System.out.println("주차된 차량 목록");
 						
 						for(Car c : parkingLot.currentCars) {
 							c.carPrint();
 						}
-						
+						System.out.println("주차된 차량 수 : " + parkingLot.getSpace());
 						break;
 						
 					// 입출차 차량 통계

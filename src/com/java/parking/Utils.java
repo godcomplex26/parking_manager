@@ -1,5 +1,9 @@
 package com.java.parking;
 
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
@@ -21,7 +25,13 @@ public class Utils {
                 System.out.print("> ");
                 int selectedMenu = sc.nextInt();
                 sc.nextLine();
+                if (selectedMenu > menu.size() || selectedMenu < 1) {
+                    throw new IllegalArgumentException("범위 내 숫자 값을 입력해 주세요.");
+                }
                 return selectedMenu;
+            }
+            catch (IllegalArgumentException e) {
+                System.out.println(e.getMessage());
             }
             catch (Exception e) {
                 System.out.println("잘못된 입력입니다.");
@@ -85,12 +95,8 @@ public class Utils {
 
     public static String randCarType() {
         List<String> carTypes = new ArrayList<>();
-        carTypes.add("세단");
-        carTypes.add("SUV");
-        carTypes.add("컨버터블");
-        carTypes.add("해치백");
-        carTypes.add("트럭");
         carTypes.add("경차");
+        carTypes.add("일반");
         Random random = new Random();
         return carTypes.get(random.nextInt(carTypes.size()));
     }
@@ -139,5 +145,10 @@ public class Utils {
         return null;
 	}
 
-    
+    public static String timeFomatter(Instant i) {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        LocalDateTime timeOut = LocalDateTime.ofInstant(i, ZoneId.systemDefault());
+        String timeOutFormat = timeOut.format(formatter);
+        return timeOutFormat;
+    }
 }

@@ -1,6 +1,8 @@
 package com.java.parking;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Random;
 import java.util.Scanner;
 
@@ -37,28 +39,49 @@ public class ParkingLot implements InnerParkingLot{
 			System.out.print("입차 차량 번호 입력(0 입력시 랜덤 생성) > ");
 			String inCarNum = sc.nextLine(); // 차량 번호 입력
 			inCarNum = Utils.fakeCarNumRecognizer(inCarNum);
-									
-			System.out.print("차량 종류 입력 > ");
-			String inCarType = sc.nextLine(); // 차량 타입 자동 생성 입력
+            String strCarType = null;
+            List<String> selectCarType = Arrays.asList("일반", "경차");
+            int intCarType = Utils.showMenu(selectCarType, sc);
+            if (intCarType == 1) {
+                strCarType = "일반";
+            }
+            else if (intCarType == 2) {
+                strCarType = "경차";
+            }
+            // while(true) {
+                
+            //     sc.nextLine();
+            //     if (intCarType == 1) {
+            //         strCarType = "일반";
+            //         break;
+            //     }
+            //     else if (intCarType == 2) {
+            //         strCarType = "경차";
+            //         break;
+            //     }
+            //     else {
+            //         System.out.println("다시 입력해 주세요.");
+            //     }
+            // }
 			
-			currentCars.add(new Car(inCarNum, inCarType)); // carNum, carType 가지는 자동차 입차
+			currentCars.add(new Car(inCarNum, strCarType)); // carNum, carType 가지는 자동차 입차
+            setSpace();
 			Utils.showCarInfo(inCarNum, "입고");
 			Utils.showLotInfo(getCurrentSpace()); // 남은 주차 자리 출력
         }
         else {
             System.out.println(errorType(1));
         }
-        setSpace();
     }
 
     public void carIn(Car car) {
         if (this.space < this.spaceTotal) {
             currentCars.add(car);
+            setSpace();
         }
         else {
             System.out.println(errorType(1));
         }
-        setSpace();
     }
     
     @Override

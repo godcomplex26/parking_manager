@@ -34,7 +34,6 @@ public class NewPayment {
         if (car.timeOut == null) {
             car.setTimeOut();
         }
-        car.setTotalPay(receive);
         if (getAmount() == receive) {
             car.setTimeOut();
             System.out.println("----------" + car.timeOut);
@@ -42,6 +41,7 @@ public class NewPayment {
             car.isPaid = true;
             System.out.printf("안녕히 가세요. 감사합니다.\n");
             parkingLot.carOut(car);
+            car.setTotalPay(receive);
             return this.car;
         }
         else if (getAmount() < receive) {
@@ -52,12 +52,14 @@ public class NewPayment {
             // int changes = receive - getAmount();
             System.out.printf("거스름돈은 %d원 입니다. 감사합니다.\n", -getAmount());
             parkingLot.carOut(car);
+            car.setTotalPay(receive+getAmount());
             return this.car;
         }
         else {
             car.setTimeOut();
             car.setPaidAmount(receive);
             System.out.printf("다시 정산을 해주시기 바랍니다. 감사합니다.\n");
+            car.setTotalPay(receive);
             return this.car;
         }
     }
