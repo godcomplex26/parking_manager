@@ -1,7 +1,6 @@
 package com.java.parking;
 
 import java.time.Duration;
-import java.time.Instant;
 
 public class NewPayment {
     Car car;
@@ -11,6 +10,10 @@ public class NewPayment {
     public NewPayment(Car car, ParkingLot parkingLot) {
         this.car = car;
         this.parkingLot = parkingLot;
+    }
+
+    public void setDiscount(double d) {
+        this.discount = d;
     }
 
     int getAmount() {

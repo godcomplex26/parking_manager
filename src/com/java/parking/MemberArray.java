@@ -2,7 +2,6 @@ package com.java.parking;
 
 import java.util.ArrayList;
 import java.util.Comparator;
-import java.util.TreeSet;
 
 
 interface InnerMemberArray {
@@ -16,12 +15,10 @@ interface InnerMemberArray {
 
 public class MemberArray extends ArrayList<Member> implements InnerMemberArray {
     public boolean isMember(String carNum) {
-        for (Member member : this) {
-            if (member.carNum.equals(carNum)) {
-                return true;
-            }
+        if (findMember(carNum) == null) {
+            return false;
         }
-        return false;
+        return true;
     }
 
     // public boolean isNumeric(String str) {

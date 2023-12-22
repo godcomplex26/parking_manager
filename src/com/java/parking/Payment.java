@@ -1,8 +1,6 @@
 package com.java.parking;
 
 import java.time.Duration;
-import java.time.Instant;
-import java.time.temporal.ChronoUnit;
 
 abstract class AbstractPayment {
     Car car;

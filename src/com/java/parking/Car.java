@@ -35,7 +35,7 @@ public class Car { // extends AbstractCar implements InnerCar {
     String carNum;
     String carType;
     boolean isPaid = false;
-    int memNum = 0;
+    String memNum = null;
     int paidAmount = 0;
     int totalPay = 0;
     public Instant timeIn = Instant.now();
@@ -55,7 +55,7 @@ public class Car { // extends AbstractCar implements InnerCar {
         return this.carType;
     }
 
-    public void setMemNum(int memNum) {
+    public void setMemNum(String memNum) {
         this.memNum = memNum;
     }
 

@@ -62,6 +62,13 @@ public class Main {
 							Car it = Utils.findCarInst(parkingLot.currentCars, outCarNum);
 							it.addAnHour(); // 1시간 추가
 							NewPayment pay = new NewPayment(it, parkingLot);
+                            if (memberList.mlist.isMember(it.carNum)) {
+                                pay.setDiscount(0.2);
+                            }
+                            else {
+                                pay.setDiscount(0);
+                            }
+                            // pay.setDiscount(0.2);
 							while (!pay.car.isPaid) {
 								pay.car.setTimeOut();
 								System.out.printf(" %d원을 다시 계산해 주세요.\n", pay.getAmount());
