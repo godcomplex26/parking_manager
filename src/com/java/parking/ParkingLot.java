@@ -19,7 +19,7 @@ public class ParkingLot implements InnerParkingLot{
     ArrayList<Car> currentCars = new ArrayList<>(); // database
     CarArray outCars = new CarArray(); // database
     int spaceTotal = 70; // 전체 주차가능 수
-    int space = 0; // 현재 주차중인 수
+    private int space = this.currentCars.size(); // 현재 주차중인 수
     int pricePerTenMin = 200;
 
     
@@ -43,23 +43,22 @@ public class ParkingLot implements InnerParkingLot{
 			
 			currentCars.add(new Car(inCarNum, inCarType)); // carNum, carType 가지는 자동차 입차
 			Utils.showCarInfo(inCarNum, "입고");
-			space++;
 			Utils.showLotInfo(getCurrentSpace()); // 남은 주차 자리 출력
         }
         else {
             System.out.println(errorType(1));
         }
-        
+        setSpace();
     }
 
     public void carIn(Car car) {
         if (this.space < this.spaceTotal) {
             currentCars.add(car);
-            space++;
         }
         else {
             System.out.println(errorType(1));
         }
+        setSpace();
     }
     
     @Override
@@ -67,11 +66,11 @@ public class ParkingLot implements InnerParkingLot{
     	if (car.isPaid == true) {
     		currentCars.remove(car);
             outCars.add(car); // 차량 출고
-            space--;
             }
     	else {
             System.out.println(errorType(3));
     	}
+        setSpace();
     }
 
 
@@ -144,5 +143,13 @@ public class ParkingLot implements InnerParkingLot{
             // }
             Utils.makeCars(60, this);
         }
+    }
+
+    private void setSpace() {
+        this.space = this.currentCars.size();
+    }
+
+    public int getSpace() {
+        return this.space;
     }
 }

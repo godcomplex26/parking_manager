@@ -21,7 +21,9 @@ public class NewPayment {
             car.setTimeOut();
         }
         Duration duration = Duration.between(this.car.timeIn, this.car.timeOut);
-        return (int)(duration.toMinutes()*parkingLot.pricePerTenMin*(1-discount) - car.paidAmount);
+        int durationMin = (int) duration.toMinutes()/10;
+        int amount = (int)(durationMin*parkingLot.pricePerTenMin*(1-discount) - car.paidAmount);
+        return amount;
     }
 
     int getChanges(int amount, int receive) {
@@ -32,9 +34,9 @@ public class NewPayment {
         if (car.timeOut == null) {
             car.setTimeOut();
         }
+        car.setTotalPay(receive);
         if (getAmount() == receive) {
             car.setTimeOut();
-            car.setTotalPay(getAmount());
             System.out.println("----------" + car.timeOut);
             car.setPaidAmount(receive);
             car.isPaid = true;
@@ -44,12 +46,11 @@ public class NewPayment {
         }
         else if (getAmount() < receive) {
             car.setTimeOut();
-            car.setTotalPay(getAmount());
             System.out.println("----------" + car.timeOut);
             car.setPaidAmount(receive);
             car.isPaid = true;
             // int changes = receive - getAmount();
-            System.out.printf("거스름돈은 %d 입니다. 감사합니다.\n", -getAmount());
+            System.out.printf("거스름돈은 %d원 입니다. 감사합니다.\n", -getAmount());
             parkingLot.carOut(car);
             return this.car;
         }

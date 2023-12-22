@@ -84,6 +84,6 @@ public class Car { // extends AbstractCar implements InnerCar {
     }
 
     public void setTotalPay(int amount) {
-        this.totalPay = amount;
+        this.totalPay += amount;
     }
 }

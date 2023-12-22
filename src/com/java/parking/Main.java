@@ -22,7 +22,7 @@ public class Main {
 		boolean runLMenu2_2 = true; // 회원 정보 수정 및 삭제
 		
 		ParkingLot parkingLot = new ParkingLot(); // 주차장 객체 생성
-		parkingLot.setTest(); // 테스트용 자료 추가
+		// parkingLot.setTest(); // 테스트용 자료 추가
 		MemberList memberList = new MemberList(); // 멤버 리스트 객체 생성
 
 		while(runUMenu) {
@@ -53,14 +53,18 @@ public class Main {
 					case 2:
 						Utils.showUI("출차 정산");
 						
-						if(parkingLot.space > 0 ) { // 출차 차량 존재 여부 확인
-							sc.nextLine(); // 입력창 초기화
+						if(parkingLot.getSpace() > 0 ) { // 출차 차량 존재 여부 확인
 							    
 							System.out.print("출차 차량 번호 입력 > ");
 							String outCarNum = sc.nextLine(); // 출차 차량 번호 입력
 							    
 							Car it = Utils.findCarInst(parkingLot.currentCars, outCarNum);
-							it.addAnHour(); // 1시간 추가
+							if (it == null) {
+                                break;
+                            }
+							// 1시간 추가
+							it.addAnHour();
+							
 							NewPayment pay = new NewPayment(it, parkingLot);
                             if (memberList.mlist.isMember(it.carNum)) {
                                 pay.setDiscount(0.2);
@@ -71,14 +75,14 @@ public class Main {
                             // pay.setDiscount(0.2);
 							while (!pay.car.isPaid) {
 								pay.car.setTimeOut();
-								System.out.printf(" %d원을 다시 계산해 주세요.\n", pay.getAmount());
+								System.out.printf(" %d원을 계산해 주세요.\n", pay.getAmount());
 								System.out.print("> ");
 								int amount = sc.nextInt();
 								pay.car = pay.execPay(amount);
 							}		
 							
-							parkingLot.currentCars.remove(it);
-							parkingLot.carOut(it);
+							// parkingLot.currentCars.remove(it);
+							// parkingLot.carOut(it);
 							Utils.showCarInfo(outCarNum, "출고");
 							Utils.showLotInfo(parkingLot.getCurrentSpace()); // 남은 주차 자리 출력
 							break;
@@ -91,12 +95,14 @@ public class Main {
 					// 입차 차량 조회
 					case 3:
 						Utils.showUI("입차 차량 조회");
-						sc.nextLine(); // 입력창 초기화
-						
+
 						System.out.print("조회할 차량 번호 입력 > ");
 						String carNum = sc.nextLine(); // 회원 ID 입력
 						
 						Car it2 = Utils.findCarInst(parkingLot.currentCars, carNum);
+                        if (it2 == null) {
+                            break;
+                        }
 						it2.carPrint();
 						break;
 					
@@ -177,12 +183,14 @@ public class Main {
 								// 회원 정보 수정
 								case 1:
 									Utils.showUI("회원 등록 정보 수정");
-									sc.nextLine(); // 입력창 초기화
 									
 									System.out.print("수정할 회원 ID 입력 > ");
 									String memId = sc.nextLine(); // 회원 ID 입력
 									
 									Member it = Utils.findMemInst(memberList.mlist, memId);
+                                    if (it == null) {
+                                        break;
+                                    }
 									
 									System.out.println("회원 정보를 입력하세요.");
 									System.out.print("회원 ID > ");
@@ -205,12 +213,14 @@ public class Main {
 								// 회원 정보 삭제	
 								case 2:
 									Utils.showUI("회원 등록 정보 삭제");
-									sc.nextLine(); // 입력창 초기화
 									
 									System.out.print("삭제할 회원 ID 입력 > ");
 									memId = sc.nextLine(); // 회원 ID 입력
 									
 									it = Utils.findMemInst(memberList.mlist, memId);
+                                    if (it == null) {
+                                        break;
+                                    }
 									memberList.mlist.remove(it);
 									System.out.println("회원 정보 삭제 완료");					
 									break;
@@ -237,7 +247,6 @@ public class Main {
 						
 						if(makeCarNum <= parkingLot.getCurrentSpace()) {
 							Utils.makeCars(makeCarNum, parkingLot.currentCars);
-							parkingLot.space += makeCarNum;
 							System.out.println(makeCarNum + "대의 차량이 생성 되었습니다.");
 						}
 						else {
@@ -261,7 +270,7 @@ public class Main {
 					// 현재 주차된 차량 현황
 					case 1:
 						Utils.showUI("현재 주차된 차량 현황");
-						System.out.println("주차된 차량 수 : " + parkingLot.space);
+						System.out.println("주차된 차량 수 : " + parkingLot.getSpace());
 						System.out.println("주차된 차량 목록");
 						
 						for(Car c : parkingLot.currentCars) {

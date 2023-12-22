@@ -114,13 +114,14 @@ public class Utils {
     
     // 특정 carNum을 가진 Car 객체를 list에서 Car 타입으로 호출
     public static Car findCarInst(ArrayList list, String carNum) {
-    	Car it = null;
 		for(Iterator<Car> itr = list.iterator(); itr.hasNext();) {
-			it = itr.next();
+			Car it = itr.next();
 			if(carNum.equals(it.carNum)) {
 				return it;
 			}
-		} return it;
+		}
+        System.out.println("검색된 차량이 없습니다.");
+        return null;
 	}
 			
 			
@@ -128,13 +129,14 @@ public class Utils {
     
     // 특정 ID를 가진 member 객체를 list에서 member 타입으로 호출
     public static Member findMemInst(ArrayList list, String memId) {
-    	Member it = null;
 		for(Iterator<Member> itr = list.iterator(); itr.hasNext();) {
-			it = itr.next();
+			Member it = itr.next();
 			if(memId.equals(it.memId)) {
 				return it;
 			}
-		} return it;
+		}
+        System.out.println("검색된 회원이 없습니다."); 
+        return null;
 	}
 
     
