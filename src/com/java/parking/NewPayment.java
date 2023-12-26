@@ -23,12 +23,18 @@ public class NewPayment {
     	{
     		d1 = 0.5;
     	}
+    	
     	if(ma.findMember(this.car.carNum) != null)
     	{
             d2 = 0.3;
         }
         this.discount = d1;
+        
+        if(d1 != 0) {
         this.discount = d1*(1+d2);
+        } else if(d1 == 0) {
+        	this.discount = d2;
+        }
     }
 
     int getAmount() {
@@ -51,7 +57,7 @@ public class NewPayment {
         }
         if (getAmount() == receive) {
             car.setTimeOut();
-            System.out.println("----------" + car.timeOut);
+            System.out.println("----------" + Utils.timeFomatter(car.timeOut));
             car.setPaidAmount(receive);
             car.isPaid = true;
             System.out.printf("안녕히 가세요. 감사합니다.\n");
@@ -61,7 +67,7 @@ public class NewPayment {
         }
         else if (getAmount() < receive) {
             car.setTimeOut();
-            System.out.println("----------" + car.timeOut);
+            System.out.println("----------" + Utils.timeFomatter(car.timeOut));
             car.setPaidAmount(receive);
             car.isPaid = true;
             // int changes = receive - getAmount();

@@ -5,7 +5,14 @@ import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 
-public class CarArray extends ArrayList<Car> {
+interface InnerCarArray {
+    Car findCar(String carNum);
+    void showAll();
+    int showAllCar();
+    void showAllPay();
+}
+
+public class CarArray extends ArrayList<Car> implements InnerCarArray {
 
     public Car findCar(String carNum) {
         for (Car car : this) {
@@ -25,27 +32,32 @@ public class CarArray extends ArrayList<Car> {
             LocalDateTime timeOut = LocalDateTime.ofInstant(car.timeIn, ZoneId.systemDefault());
             String timeInFormat = timeIn.format(formatter);
             String timeOutFormat = timeOut.format(formatter);
-            System.out.printf("%-15s %-15s %-15s %-40s %-40s\n", car.carNum, car.carType, car.totalPay, timeInFormat, timeOutFormat);
+            System.out.printf("%-15s %-15s %d%-15s %-40s %-40s\n", car.carNum, car.carType, car.totalPay, "원", timeInFormat, timeOutFormat);
             sum += car.totalPay;
         }
         System.out.printf("합계: %45d\n", sum);
     }
 
-    public void showAllCar() {
-        System.out.printf("%-15s %-15s %-15s %-40s %-40s\n", "차량번호", "차량타입", "결제금액", "입차시간", "출차시간");
+    public int showAllCar() {
         for (Car car : this) {
-            System.out.printf("%-15s %-15s %-15s %-40s %-40s\n", car.carNum, car.carType, car.totalPay, Utils.timeFomatter(car.timeIn), Utils.timeFomatter(car.timeOut));
+            String timeOut = "출차 전";
+            if (car.timeOut != null) {
+                timeOut = Utils.timeFomatter(car.timeOut);
+            }
+            System.out.printf("%-15s %-15s %d%-15s %-40s %-40s\n", car.carNum, car.carType, car.totalPay, "원", Utils.timeFomatter(car.timeIn), timeOut);
         }
-        System.out.printf("총 차량 수: %30d\n",this.size());
+        // System.out.printf("총 차량 수: %30d\n",this.size());
+        return this.size();
     }
-
+    
     public void showAllPay() {
         System.out.printf("%-15s %-15s %-15s\n", "차량번호", "결제금액", "출차시간");
         int sum = 0;
         for (Car car : this) {
-            System.out.printf("%-15s %-15d %-15s\n", car.carNum, car.totalPay, Utils.timeFomatter(car.timeIn));
+            System.out.printf("%-15s %d%-15s %-15s\n", car.carNum, car.totalPay, "원", Utils.timeFomatter(car.timeIn));
             sum += car.totalPay;
         }
-        System.out.printf("총 차량 수: %-30d 합계: %-30d\n",this.size() ,sum);
+        System.out.printf("총 차량 수: %d\n", this.size());
+        System.out.printf("합계: %d원\n", sum);
     }
 }

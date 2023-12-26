@@ -3,7 +3,7 @@ package com.java.parking;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 
-/*
+
 abstract class AbstractCar {
     String carNum;
     String carType;
@@ -28,10 +28,10 @@ interface InnerCar {
     void setPaidAmount(int paidAmount);
     void addAnHour();
 }
-*/
 
 
-public class Car { // extends AbstractCar implements InnerCar {
+
+public class Car extends AbstractCar implements InnerCar {
     String carNum;
     String carType;
     boolean isPaid = false;
@@ -42,6 +42,7 @@ public class Car { // extends AbstractCar implements InnerCar {
     public Instant timeOut = null;
 
     public Car(String carNum, String carType) {
+        super(carNum, carType);
     	this.carNum = carNum;
         this.carType = carType;
     }
@@ -64,7 +65,7 @@ public class Car { // extends AbstractCar implements InnerCar {
     }
 
     public int getPaidAmount() {
-        return this.paidAmount;
+        return paidAmount;
     }
 
     public void setPaidAmount(int paidAmount) {
@@ -85,5 +86,12 @@ public class Car { // extends AbstractCar implements InnerCar {
 
     public void setTotalPay(int amount) {
         this.totalPay += amount;
+    }
+
+
+    @Override
+    public void setMemNum(int memNum) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'setMemNum'");
     }
 }

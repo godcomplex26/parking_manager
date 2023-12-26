@@ -14,11 +14,11 @@ interface InnerParkingLot
 	int getCurrentSpace();
     String errorType(int errorCode);
     void setPricePerTenMin(int price);
-    void showAllOutCarPayments();
+//    void showAllOutCarPayments();
 }
 
 public class ParkingLot implements InnerParkingLot{
-    ArrayList<Car> currentCars = new ArrayList<>(); // database
+    CarArray currentCars = new CarArray(); // database
     CarArray outCars = new CarArray(); // database
     int spaceTotal = 70; // 전체 주차가능 수
     private int space = this.currentCars.size(); // 현재 주차중인 수
@@ -47,23 +47,7 @@ public class ParkingLot implements InnerParkingLot{
             }
             else if (intCarType == 2) {
                 strCarType = "경차";
-            }
-            // while(true) {
-                
-            //     sc.nextLine();
-            //     if (intCarType == 1) {
-            //         strCarType = "일반";
-            //         break;
-            //     }
-            //     else if (intCarType == 2) {
-            //         strCarType = "경차";
-            //         break;
-            //     }
-            //     else {
-            //         System.out.println("다시 입력해 주세요.");
-            //     }
-            // }
-			
+            }		
 			currentCars.add(new Car(inCarNum, strCarType)); // carNum, carType 가지는 자동차 입차
             setSpace();
 			Utils.showCarInfo(inCarNum, "입고");
@@ -106,6 +90,8 @@ public class ParkingLot implements InnerParkingLot{
             	return "주차된 차량이 없습니다.";
             case 3:
                 return "정산이 완료되지 않았습니다.";
+            case 4:
+            	return "출차된 차량이 없습니다.";
             default:
                 return "오류없음";
         }
@@ -116,56 +102,58 @@ public class ParkingLot implements InnerParkingLot{
         this.pricePerTenMin = price;
     }
 
-    @Override
-    public void showAllOutCarPayments() {
-        if (outCars.size() == 0) {
-            System.out.println("결제된 차량이 없습니다.");
-        }
-        else {
-                for (Car car : outCars) {
-                System.out.printf("차량번호: %s 결제금액: %d \n", car.carNum, car.totalPay);
-            }
+//    @Override
+//    public void showAllOutCarPayments() {
+//        if (outCars.size() == 0) {
+//            System.out.println("결제된 차량이 없습니다.");
+//        }
+//        else {
+//                for (Car car : outCars) {
+//                System.out.printf("차량번호: %s 결제금액: %d \n", car.carNum, car.totalPay);
+//            }
+//        }
+//    }
+
+    public void setTestCurrentCars(int num) {
+        Utils.makeCars(num, this);
+        for (Car car : this.currentCars) {
+            car.addHours(randNum(1, 6));
         }
     }
 
-    public void setTest() {
-        Utils.makeCars(50, this);
-        Random r = new Random();
+    public void setTestOutCarsAll() {
         if (this.currentCars.size() == 0) {
             System.out.println("사이즈가 0입니다.");
         }
         else {
-            // System.out.println(this.currentCars.size());
-            // System.out.println(this.currentCars.get(0).timeIn);
-            // System.out.println(this.currentCars.get(0).timeOut);
-            // for (int i = 0; i < this.currentCars.size(); i++) {
-            //     this.currentCars.get(i).addHours(r.nextInt(2,5));
-            //     NewPayment pay = new NewPayment(this.currentCars.get(i), this);
-            //     pay.execPay(200000);
-            // }
-            
-            for (Car car : this.currentCars) {
-                car.addHours(r.nextInt(1, 5));
-                // NewPayment pay = new NewPayment(car, this);
-                // car = pay.execPay(pay.getAmount());
-                // this.carOut(car);
-            }
-
             while(this.currentCars.size() != 0) {
                 NewPayment pay = new NewPayment(this.currentCars.get(0), this);
                 pay.execPay(pay.getAmount());
             }
-
-            // Iterator<Car> iterator = this.currentCars.iterator();
-            // while(iterator.hasNext()) {
-            //     Car car = iterator.next();             
-            //     NewPayment pay = new NewPayment(car, this);
-            //     if (pay.execPay(pay.getAmount()).isPaid) {
-            //         iterator.remove();
-            //     }
-            // }
-            Utils.makeCars(60, this);
         }
+    }
+
+    public void setTestOutCars(int num, MemberArray ma) {
+        if (this.currentCars.size() == 0) {
+            System.out.println("사이즈가 0입니다.");
+        }
+        else {
+            if (this.currentCars.size() < num) {
+                num = this.currentCars.size();
+            }
+            num = this.currentCars.size() - num;
+            while(this.currentCars.size() > num) {
+                NewPayment pay = new NewPayment(this.currentCars.get(0), this);
+                pay.setDiscount(ma);
+                pay.execPay(pay.getAmount());
+            }
+        }
+    }
+
+    public int randNum(int min, int max) {
+        Random random = new Random();
+        int rNum = random.nextInt(max - min + 1) + min;
+        return rNum;
     }
 
     private void setSpace() {
